@@ -20,6 +20,7 @@ app.use((req, res, next) => {
 });
 
 const usersFilePath = path.join(__dirname, "users.json");
+console.log(usersFilePath);
 
 const loadUsers = async () => {
   if (!fs.existsSync(usersFilePath)) {
@@ -30,7 +31,11 @@ const loadUsers = async () => {
 };
 
 const saveUsers = (users) => {
-  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+  try {
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 app.get("/users", async (req, res) => {
