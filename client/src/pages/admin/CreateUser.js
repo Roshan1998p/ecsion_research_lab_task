@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { validateAlphaNumeric } from "../../utils";
+import { EMAIL_REGEX, validateAlphaNumeric } from "../../utils";
 
 const CreateUser = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +16,11 @@ const CreateUser = () => {
     const errors = {};
     if (!formData.username) errors.username = "Username is required";
     if (!formData.name) errors.name = "Name is required";
-    if (!formData.email) errors.email = "Email is required";
+    if (!formData.email) {
+      errors.email = "Email is required";
+    } else if (!EMAIL_REGEX.test(formData.email)) {
+      errors.email = "Please enter valid Email";
+    }
     if (!formData.password) errors.password = "Password is required";
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
