@@ -69,6 +69,7 @@ const Login = () => {
         setServiceErrors({ user: "Invalid username or password" });
       }
     } catch (error) {
+      setServiceErrors({ user: "Something went wrong" });
       console.log(error);
     } finally {
       setLoading(false);

@@ -7,6 +7,7 @@ export const validateAlphaNumeric = (e, length = 50) => {
     .slice(0, length));
 };
 
+// getting the sessionStorage data
 export const getAuthData = () => {
   const initialState = {
     isAuthenticatedAdmin: false,
@@ -19,6 +20,7 @@ export const getAuthData = () => {
     : sessionDetail;
 };
 
+// storing the data
 export const setAuthData = (obj) => {
   sessionStorage.setItem("sessionDetail", JSON.stringify(obj));
 };
