@@ -1,11 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 6969;
+const PORT = process.env.PORT || 6969;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -21,29 +23,48 @@ app.use((req, res, next) => {
 
 const usersFilePath = path.join(__dirname, "users.json");
 
+// In-memory data store as a fallback for production
+let inMemoryUsers = [];
+
 const loadUsers = async () => {
-  if (!fs.existsSync(usersFilePath)) {
-    await fs.writeFileSync(usersFilePath, JSON.stringify([]));
+  if (process.env.NODE_ENV === "production") {
+    return inMemoryUsers;
+  } else {
+    if (!fs.existsSync(usersFilePath)) {
+      fs.writeFileSync(usersFilePath, JSON.stringify([]));
+    }
+    const usersData = fs.readFileSync(usersFilePath);
+    return JSON.parse(usersData);
   }
-  const usersData = await fs.readFileSync(usersFilePath);
-  return JSON.parse(usersData);
 };
 
-const saveUsers = (users) => {
-  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+const saveUsers = async (users) => {
+  if (process.env.NODE_ENV === "production") {
+    inMemoryUsers = users;
+  } else {
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+  }
 };
 
 app.get("/users", async (req, res) => {
-  const users = await loadUsers();
-  res.json(users);
+  try {
+    const users = await loadUsers();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/users", async (req, res) => {
-  const users = await loadUsers();
-  const newUser = req.body;
-  users.push(newUser);
-  saveUsers(users);
-  res.status(201).json(newUser);
+  try {
+    const users = await loadUsers();
+    const newUser = req.body;
+    users.push(newUser);
+    await saveUsers(users);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {
