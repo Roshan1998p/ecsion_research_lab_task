@@ -3,7 +3,7 @@ import React from "react";
 const OverView = () => {
   return (
     <div>
-      <h2>Welcome to the App Admin</h2>
+      <h2>Welcome to the Admin Dashboard</h2>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
