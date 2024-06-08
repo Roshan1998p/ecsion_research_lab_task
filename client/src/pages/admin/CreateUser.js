@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { EMAIL_REGEX, validateAlphaNumeric } from "../../utils";
+import Loader from "../../components/loader";
 
 const CreateUser = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -49,7 +51,7 @@ const CreateUser = () => {
 
     const { username, password, email, name } = formData;
     const param = { username, password, email, name };
-
+    setLoading(true);
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/users`, param);
       alert("User created successfully");
@@ -63,11 +65,14 @@ const CreateUser = () => {
     } catch (error) {
       console.error("Error creating user:", error);
       alert("Error creating user");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
+      {loading ? <Loader /> : ""}
       <h1>Create User</h1>
       <div className="form-inner">
         <form onSubmit={onSubmit} className="signup">
