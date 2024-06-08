@@ -62,6 +62,7 @@ const CreateUser = () => {
         confirmPassword: "",
         email: "",
       });
+      setErrors({});
     } catch (error) {
       console.error("Error creating user:", error);
       alert("Error creating user");
