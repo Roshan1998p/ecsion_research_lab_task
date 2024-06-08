@@ -27,23 +27,27 @@ const usersFilePath = path.join(__dirname, "users.json");
 let inMemoryUsers = [];
 
 const loadUsers = async () => {
-  if (process.env.NODE_ENV === "production") {
-    return inMemoryUsers;
-  } else {
+  // if (process.env.NODE_ENV === "production") {
+  //   return inMemoryUsers;
+  // } else {
     if (!fs.existsSync(usersFilePath)) {
       fs.writeFileSync(usersFilePath, JSON.stringify([]));
     }
     const usersData = fs.readFileSync(usersFilePath);
     return JSON.parse(usersData);
-  }
+  //}
 };
 
 const saveUsers = async (users) => {
-  if (process.env.NODE_ENV === "production") {
-    inMemoryUsers = users;
-  } else {
+  // if (process.env.NODE_ENV === "production") {
+  //   inMemoryUsers = users;
+  // } else {
+    if (fs.existsSync(usersFilePath)) {
+      fs.chmodSync(usersFilePath, 0o777);
+    }
+  fs.chmod
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
-  }
+  //}
 };
 
 app.get("/users", async (req, res) => {
