@@ -22,7 +22,9 @@ app.use((req, res, next) => {
 });
 
 const usersFilePath = path.join(__dirname, "users.json");
-
+if (fs.existsSync(usersFilePath)) {
+  fs.chmodSync(usersFilePath, 0o777);
+}
 // In-memory data store as a fallback for production
 let inMemoryUsers = [];
 
@@ -42,10 +44,8 @@ const saveUsers = async (users) => {
   // if (process.env.NODE_ENV === "production") {
   //   inMemoryUsers = users;
   // } else {
-    if (fs.existsSync(usersFilePath)) {
-      fs.chmodSync(usersFilePath, 0o777);
-    }
-  fs.chmod
+   
+  
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
   //}
 };
